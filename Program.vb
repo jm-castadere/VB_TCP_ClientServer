@@ -1,8 +1,20 @@
 Imports System
+Imports System.Net
 
 Module Program
     Sub Main(args As String())
-        Console.Write("Server/Client [S/C]: ")
+
+        Dim hostName As String = System.Net.Dns.GetHostName()
+        Dim addresses As IPAddress() = Dns.GetHostEntry(hostName).AddressList()
+       
+        For Each hostAdr As IPAddress In addresses
+            Console.WriteLine("Name: " & hostName & " IP Address: " & hostAdr.ToString())
+            If hostAdr.AddressFamily.ToString() = "InterNetwork" Then
+                Console.WriteLine("    [Potential host IP]")
+            End If
+        Next
+
+        Console.Write(vbCrLf & "Server/Client [S/C]: ")
         Dim res As String = Console.ReadLine()
 
         Select Case Char.ToUpper(res(0))

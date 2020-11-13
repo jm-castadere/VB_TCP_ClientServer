@@ -5,6 +5,7 @@ Public Class Client
     Dim Client As TcpClient
     Dim RX As StreamReader
     Dim TX As StreamWriter
+    Dim ServerIP As String
 
     Public Sub New()
         Connect()
@@ -25,9 +26,11 @@ Public Class Client
     End Sub
 
     Sub Connect()
+        Console.Write("Enter Server IP: ")
+        ServerIP = Console.ReadLine
         Console.WriteLine("Trying to connect...")
         Try
-            Client = New TcpClient("localhost", 65535)
+            Client = New TcpClient(ServerIP, 65535)
             If Client.GetStream.CanRead Then
                 RX = New StreamReader(Client.GetStream)
                 TX = New StreamWriter(Client.GetStream)
@@ -41,7 +44,7 @@ Public Class Client
     End Sub
 
     Sub Connected()
-        Console.WriteLine("Connected.")
+        Console.Write("Connected." & vbCrLf & "$ ")
 
         If RX.BaseStream.CanRead Then
             Try
