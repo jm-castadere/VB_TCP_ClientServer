@@ -19,9 +19,14 @@ Public Class Server
 
     Sub ServerLoop()
         While (ServerStatus)
+            'show to command 
+
             Console.Write("$ ")
             Dim str As String = Console.ReadLine
+            'Stop enter
             If str.ToUpper = "STOP" Then StopServer()
+
+            'MSG enter
             If str.ToUpper.StartsWith("MSG") Then
                 Console.Write("Enter message to clients: ")
                 Dim data As String = Console.ReadLine
@@ -37,8 +42,11 @@ Public Class Server
                 Server = New TcpListener(IPAddress.Any, 65535)
                 Server.Start()
                 ServerStatus = True
+
                 Threading.ThreadPool.QueueUserWorkItem(AddressOf ClientHandler)
-                Console.WriteLine("Server Started...")
+
+                Console.WriteLine($"IP:{IPAddress.Any} port:{65535} Server Started...")
+
             Catch ex As Exception
                 ServerStatus = False
             End Try
@@ -79,6 +87,8 @@ Public Class Server
                 Catch ex As Exception
                     SendToClients(data)
                 End Try
+            Else
+                Console.WriteLine("Client not Started..")
             End If
         End If
     End Sub
@@ -110,6 +120,8 @@ Public Class Server
 
         Catch ex As Exception
             For i As Integer = 0 To Clients.Count
+                If i = 0 Then Exit For
+
                 If Not Clients(i).Connected Then
                     Clients(i).Close()
                     Console.Write("Client removed." & vbCrLf & "$ " & vbCrLf)
